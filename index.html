@@ -61,76 +61,360 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 15px;
+    box-sizing: border-box;
   }
 
-  /* International Phone Input Styling */
+  /* International Phone Input Styling - New Structure */
   .iti {
     width: 100%;
     margin-top: 12px;
     position: relative;
   }
 
-  .iti__flag-container {
+  .iti__country-container {
+    position: relative;
+  }
+
+  .iti__selected-country {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
-    padding: 0 8px;
     display: flex;
     align-items: center;
-    z-index: 1;
+    z-index: 2;
+    border: none;
+    background: #f8f8f8;
+    border-right: 1px solid #ddd;
+    border-radius: 8px 0 0 8px;
+    padding: 0 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 68px;
+    height: 100%;
   }
 
-  .iti__selected-flag {
-    padding: 0 6px;
-    cursor: pointer;
-    outline: none;
+  .iti__selected-country:hover {
+    background: #f0f0f0;
+  }
+
+  .iti__tel-input:focus ~ .iti__country-container .iti__selected-country {
+    border-right-color: #111;
+    background: #f5f5f5;
+  }
+
+  .iti__selected-country-primary {
     display: flex;
     align-items: center;
+    gap: 8px;
+  }
+
+  .iti__flag {
+    width: 22px;
+    height: 16px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    flex-shrink: 0;
   }
 
   .iti__arrow {
-    margin-left: 6px;
     width: 0;
     height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-top: 4px solid #555;
+    border-top: 5px solid #666;
+    transition: transform 0.2s, border-top-color 0.2s;
+    flex-shrink: 0;
   }
 
-  .iti__country-list {
+  .iti__selected-country:hover .iti__arrow {
+    border-top-color: #111;
+  }
+
+  .iti__selected-country[aria-expanded="true"] .iti__arrow {
+    transform: rotate(180deg);
+    border-top-color: #111;
+  }
+
+  .iti__tel-input {
+    margin-top: 0;
+    padding-left: 50px;
+    padding-right: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+
+  .iti__tel-input:focus {
+    border-color: #111;
+    outline: none;
+  }
+
+  /* Dropdown Content */
+  .iti__dropdown-content {
+    position: fixed;
+    z-index: 10000;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    width: calc(100vw - 60px);
+    max-width: 500px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    pointer-events: auto;
+  }
+
+  .iti--fullscreen-popup .iti__dropdown-content {
+    max-height: 70vh;
+  }
+
+  .iti__dropdown-content.iti__hide {
+    display: none !important;
+  }
+
+  /* Search Input Wrapper */
+  .iti__search-input-wrapper {
+    padding: 12px;
+    border-bottom: 1px solid #e8e8e8;
+    background: #fff;
+    position: relative;
+    flex-shrink: 0;
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  .iti__search-icon {
     position: absolute;
-    z-index: 1000;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+  }
+
+  .iti__search-icon-svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: #999;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    display: block;
+  }
+
+  .iti__search-icon-svg circle {
+    fill: none;
+    stroke: inherit;
+  }
+
+  .iti__search-icon-svg line {
+    stroke: inherit;
+    stroke-linecap: round;
+  }
+
+  .iti__search-input {
+    margin-top: 0;
+    width: 100%;
+    padding: 10px 14px 10px 42px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    background: #fafafa;
+    outline: none;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    background-image: url('https://img.icons8.com/?size=100&id=132&format=png&color=000000');
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    background-size: 20px;
+  }  
+
+  .iti__search-input-wrapper:focus-within .iti__search-icon .iti__search-icon-svg {
+    stroke: #111;
+  }
+
+  .iti__search-input::placeholder {
+    color: #999;
+  }
+
+  .iti__search-clear {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .iti__search-clear.iti__hide {
+    display: none;
+  }
+
+  .iti__search-clear-svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Country List */
+  .iti__country-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    max-height: 200px;
     overflow-y: auto;
-    width: 100%;
-    margin-top: 4px;
+    overflow-x: hidden;
+    flex: 1;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Custom scrollbar */
+  .iti__country-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .iti__country-list::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 3px;
+  }
+
+  .iti__country-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+
+  .iti__country-list::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
   }
 
   .iti__country {
-    padding: 10px 14px;
+    padding: 12px 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.15s;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .iti__country:last-child {
+    border-bottom: none;
   }
 
   .iti__country:hover {
-    background: #f5f5f5;
+    background: #f8f8f8;
   }
 
-  .iti__flag {
-    margin-right: 8px;
+  .iti__country.iti__highlight {
+    background: #f0f0f0;
   }
 
-  #phone {
-    padding-left: 52px; /* Space for flag dropdown */
+  .iti__country-list .iti__flag {
+    width: 22px;
+    height: 16px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  .iti__country-name {
+    font-size: 15px;
+    color: #111;
+    flex: 1;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .iti__country.iti__highlight .iti__country-name {
+    font-weight: 500;
+  }
+
+  .iti__dial-code {
+    font-size: 14px;
+    color: #666;
+    margin-left: auto;
+    padding-left: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .iti__country:hover .iti__dial-code,
+  .iti__country.iti__highlight .iti__dial-code {
+    color: #111;
+  }
+
+  .iti__a11y-text {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .iti__no-results {
+    padding: 16px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .iti__no-results.iti__hide {
+    display: none;
+  }
+
+  /* Backdrop overlay when dropdown is open */
+  .iti-dropdown-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: auto;
+  }
+
+  .iti--container.iti--fullscreen-popup {
+    margin-top: 0;
+    width: calc(100vw - 60px);
+    z-index: 1;
+  }
+
+  /* Prevent body scroll when dropdown is open */
+  body.iti-dropdown-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
   }
 
   textarea {
@@ -571,6 +855,7 @@
 </div>
 
 <script>
+
 /* MAIN CAROUSEL - Enhanced Swipe with Vertical Scroll Detection */
 let currentSlide = 0;
 const inner = document.getElementById("carouselInner");
@@ -818,41 +1103,210 @@ function goToTestimonial(i) {
 
 /* TRUST BADGE CAROUSEL */
 let tb=0;const trustInner=document.getElementById("trustInner");const trustDots=document.getElementById("trustDots");const trustTotal=document.querySelectorAll(".trust-item").length;
-for(let i=0;i<trustTotal;i++){let d=document.createElement("span");if(i===0)d.classList.add("active");d.onclick=()=>{tb=i;updateTB();};trustDots.appendChild(d);} 
-function updateTB(){trustInner.style.transform=`translateX(-${tb*100}%)`;[...trustDots.children].forEach((d,i)=>d.classList.toggle("active",i===tb));}
-setInterval(()=>{tb=(tb+1)%trustTotal;updateTB();},3500);
+if(trustInner && trustDots && trustTotal > 0){
+  for(let i=0;i<trustTotal;i++){let d=document.createElement("span");if(i===0)d.classList.add("active");d.onclick=()=>{tb=i;updateTB();};trustDots.appendChild(d);} 
+  function updateTB(){if(trustInner && trustDots){trustInner.style.transform=`translateX(-${tb*100}%)`;[...trustDots.children].forEach((d,i)=>d.classList.toggle("active",i===tb));}}
+  setInterval(()=>{if(trustTotal > 0){tb=(tb+1)%trustTotal;updateTB();}},3500);
+}
 
 /* INTERNATIONAL PHONE INPUT - Initialize with IP-based country detection */
 const phoneInput = document.getElementById("phone");
 if (phoneInput) {
-  const iti = window.intlTelInput(phoneInput, {
-    initialCountry: "auto", // Auto-detect country by IP
-    geoIpLookup: function(callback) {
-      // Use ipapi.co for free IP geolocation (no API key needed)
-      fetch("https://ipapi.co/json/")
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          callback(data.country_code || "us");
-        })
-        .catch(function() {
-          callback("us"); // Fallback to US if detection fails
-        });
-    },
-    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/utils.js",
-    preferredCountries: ["us", "gb", "de", "fr", "it", "es", "nl", "be", "ch", "at"],
-    separateDialCode: false,
-    nationalMode: false
-  });
-
-  // Update form submission to include country code
-  const form = phoneInput.closest("form");
-  if (form) {
-    form.addEventListener("submit", function(e) {
-      // Get the full international number
-      const fullNumber = iti.getNumber();
-      phoneInput.value = fullNumber;
+  const script = document.createElement("script");
+  script.src = "https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/utils.js";
+  script.onload = function() {
+    const iti = window.intlTelInput(phoneInput, {
+      initialCountry: "auto",
+      geoIpLookup: function(callback) {
+        fetch("https://ipapi.co/json/")
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            callback(data.country_code || "us");
+          })
+          .catch(function() {
+            callback("us");
+          });
+      },
+      utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/utils.js",
+      preferredCountries: ["us", "gb", "de", "fr", "it", "es", "nl", "be", "ch", "at"],
+      separateDialCode: false,
+      nationalMode: false,
+      formatOnDisplay: true,
+      autoPlaceholder: "off",
+      allowDropdown: true,
+      dropdownContainer: document.body
     });
-  }
+
+    // Remove placeholder text
+    phoneInput.placeholder = "";
+    
+    // Add country code prefix when country changes
+    phoneInput.addEventListener("countrychange", function() {
+      const countryData = iti.getSelectedCountryData();
+      if (countryData && countryData.dialCode) {
+        // Get current value without country code
+        const currentValue = phoneInput.value.replace(/^\+\d+\s*/, "").trim();
+        // Only update if there's no value or if value doesn't start with the dial code
+        if (!currentValue || !phoneInput.value.startsWith(`+${countryData.dialCode}`)) {
+          // Don't auto-add dial code if user has already typed something
+          if (!currentValue) {
+            phoneInput.value = `+${countryData.dialCode}`;
+          } else {
+            // Only update if the value doesn't already have a country code
+            const hasCountryCode = /^\+\d+/.test(phoneInput.value);
+            if (!hasCountryCode) {
+              phoneInput.value = `+${countryData.dialCode} ${currentValue}`;
+            }
+          }
+        }
+      }
+    });
+
+    // Format phone number as user types (with proper cursor handling)
+    let isFormatting = false;
+    let lastFormattedValue = "";
+    let formattingTimeout = null;
+    
+    // Handle click on input field - don't interfere with dropdown
+    phoneInput.addEventListener("click", function(e) {
+      // Allow normal input clicking behavior
+      e.stopPropagation();
+    });
+
+    // Store scroll position and backdrop element
+    let scrollPosition = 0;
+    let backdrop = null;
+
+    // Function to lock body scroll and show backdrop
+    function lockBodyScroll() {
+      if (document.body.classList.contains("iti-dropdown-open")) return; // Already locked
+      
+      scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      document.body.classList.add("iti-dropdown-open");
+      document.body.style.top = `-${scrollPosition}px`;
+      
+      // Create backdrop
+      if (!backdrop) {
+        backdrop = document.createElement("div");
+        backdrop.className = "iti-dropdown-backdrop";
+        backdrop.addEventListener("click", function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          if (iti) {
+            iti.closeDropdown();
+          }
+          setTimeout(checkDropdownState, 100);
+        });
+        // Insert backdrop - dropdown will be on top due to higher z-index
+        document.body.appendChild(backdrop);
+      } else {
+        backdrop.style.display = "block";
+      }
+    }
+
+    // Function to unlock body scroll and remove backdrop
+    function unlockBodyScroll() {
+      if (!document.body.classList.contains("iti-dropdown-open")) return; // Already unlocked
+      
+      document.body.classList.remove("iti-dropdown-open");
+      document.body.style.top = "";
+      window.scrollTo(0, scrollPosition);
+      
+      // Remove backdrop
+      if (backdrop) {
+        backdrop.style.display = "none";
+        backdrop.remove();
+        backdrop = null;
+      }
+    }
+
+    // Function to check if dropdown is visible
+    function isDropdownVisible() {
+      const dropdownContent = document.querySelector(".iti__dropdown-content");
+      if (!dropdownContent) return false;
+      
+      // Check if dropdown has iti__hide class
+      if (dropdownContent.classList.contains("iti__hide")) return false;
+      
+      const style = window.getComputedStyle(dropdownContent);
+      const rect = dropdownContent.getBoundingClientRect();
+      
+      return dropdownContent.offsetParent !== null && 
+             style.display !== "none" &&
+             style.visibility !== "hidden" &&
+             style.opacity !== "0" &&
+             rect.width > 0 &&
+             rect.height > 0;
+    }
+
+    // Function to handle dropdown state changes
+    function checkDropdownState() {
+      const visible = isDropdownVisible();
+      const isLocked = document.body.classList.contains("iti-dropdown-open");
+      
+      if (visible && !isLocked) {
+        lockBodyScroll();
+      } else if (!visible && isLocked) {
+        unlockBodyScroll();
+      }
+    }
+
+    // Monitor dropdown visibility to lock/unlock scroll
+    const observer = new MutationObserver(function(mutations) {
+      checkDropdownState();
+    });
+
+    // Observe body for dropdown changes
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style", "class"]
+    });
+
+    // Listen for clicks on selected country button to open dropdown
+    const selectedCountryBtn = phoneInput.closest(".iti")?.querySelector(".iti__selected-country");
+    if (selectedCountryBtn) {
+      selectedCountryBtn.addEventListener("click", function() {
+        setTimeout(checkDropdownState, 100);
+      });
+    }
+
+    phoneInput.addEventListener("focus", function() {
+      setTimeout(checkDropdownState, 100);
+    });
+
+    // Handle backdrop clicks
+    document.addEventListener("click", function(e) {
+      const dropdownContent = document.querySelector(".iti__dropdown-content");
+      if (!dropdownContent) return;
+      
+      // Close dropdown if clicking on backdrop
+      if (e.target.classList.contains("iti-dropdown-backdrop") || backdrop?.contains(e.target)) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (iti) iti.closeDropdown();
+        setTimeout(checkDropdownState, 100);
+      }
+    });
+
+    // Listen for country change event
+    phoneInput.addEventListener("countrychange", function() {
+      setTimeout(checkDropdownState, 100);
+    });
+
+    // Update form submission to include country code
+    const form = phoneInput.closest("form");
+    if (form) {
+      form.addEventListener("submit", function(e) {
+        const fullNumber = iti.getNumber();
+        if (fullNumber) {
+          phoneInput.value = fullNumber;
+        }
+      });
+    }
+  };
+  document.head.appendChild(script);
 }
 
 </script>
