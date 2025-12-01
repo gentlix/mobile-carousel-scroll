@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ViltaGlobal – Forex & Crypto Recovery Experts</title>
 
+<!-- International Telephone Input Library -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/css/intlTelInput.css">
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/intlTelInput.min.js"></script>
+
 <style>
   body {
     margin: 0;
@@ -59,6 +63,76 @@
     font-size: 15px;
   }
 
+  /* International Phone Input Styling */
+  .iti {
+    width: 100%;
+    margin-top: 12px;
+    position: relative;
+  }
+
+  .iti__flag-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .iti__selected-flag {
+    padding: 0 6px;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .iti__arrow {
+    margin-left: 6px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #555;
+  }
+
+  .iti__country-list {
+    position: absolute;
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .iti__country {
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .iti__country:hover {
+    background: #f5f5f5;
+  }
+
+  .iti__flag {
+    margin-right: 8px;
+  }
+
+  #phone {
+    padding-left: 52px; /* Space for flag dropdown */
+  }
+
   textarea {
     height: 120px;
     resize: none;
@@ -94,12 +168,17 @@
     background: #fff;
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     margin-bottom: 30px;
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom; /* Allow vertical scrolling, prevent accidental horizontal */
   }
 
   .carousel-inner {
     display: flex;
-    transition: transform 0.45s ease;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform; /* Optimize for smooth animations */
+  }
+
+  .carousel-inner.swiping {
+    transition: none; /* Disable transition during active swipe */
   }
 
   .carousel-item {
@@ -242,8 +321,9 @@
     margin-top: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    max-width: 100%;       /* FIX 1 */
-    overflow: hidden;      /* FIX 2 */
+    max-width: 100%;
+    overflow: hidden;
+    touch-action: pan-y pinch-zoom; /* Allow vertical scrolling */
   }
 
   .testimonial-title {
@@ -254,8 +334,13 @@
 
   .testimonial-inner {
     display: flex;
-    width: 100%;           /* FIX */
-    transition: transform 0.45s ease;
+    width: 100%;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform; /* Optimize for smooth animations */
+  }
+
+  .testimonial-inner.swiping {
+    transition: none; /* Disable transition during active swipe */
   }
 
   .testimonial-item {
@@ -328,7 +413,7 @@
   <!-- CONTACT FORM -->
   <form action="https://formspree.io/f/yourformid" method="POST">
     <input type="text" name="Full Name" placeholder="Full Name" required>
-    <input type="tel" name="Phone" placeholder="Phone Number" required>
+    <input type="tel" id="phone" name="Phone" placeholder="Phone Number" required>
     <input type="email" name="Email" placeholder="Email Address" required>
     <textarea name="Case Description" placeholder="Describe your case (optional)"></textarea>
     <button type="submit">Submit Case</button>
@@ -486,13 +571,22 @@
 </div>
 
 <script>
-/* MAIN CAROUSEL */
+/* MAIN CAROUSEL - Enhanced Swipe with Vertical Scroll Detection */
 let currentSlide = 0;
 const inner = document.getElementById("carouselInner");
 const slides = document.querySelectorAll(".carousel-item");
 const totalSlides = slides.length;
 const dots = document.getElementById("dots");
 let autoSlide = true;
+
+// Swipe state tracking
+let swipeState = {
+  startX: 0,
+  startY: 0,
+  currentX: 0,
+  isSwiping: false,
+  threshold: 80 // Increased threshold for better vertical scroll detection
+};
 
 for (let i = 0; i < totalSlides; i++) {
   let dot = document.createElement("span");
@@ -516,30 +610,81 @@ function nextSlide() {
 
 setInterval(nextSlide, 4000);
 
-let startX = 0;
-
+// Enhanced touch handlers with vertical scroll detection
 inner.addEventListener("touchstart", (e) => {
   autoSlide = false;
-  startX = e.touches[0].clientX;
+  swipeState.startX = e.touches[0].clientX;
+  swipeState.startY = e.touches[0].clientY;
+  swipeState.isSwiping = false;
+});
+
+inner.addEventListener("touchmove", (e) => {
+  if (!swipeState.startX) return;
+  
+  swipeState.currentX = e.touches[0].clientX;
+  const currentY = e.touches[0].clientY;
+  const diffX = Math.abs(swipeState.currentX - swipeState.startX);
+  const diffY = Math.abs(currentY - swipeState.startY);
+  
+  // Only start swiping if horizontal movement is significantly greater than vertical
+  if (diffX > 10 && diffX > diffY * 1.5) {
+    if (!swipeState.isSwiping) {
+      swipeState.isSwiping = true;
+      inner.classList.add("swiping");
+    }
+    
+    // Calculate offset during swipe
+    const offset = swipeState.currentX - swipeState.startX;
+    const baseOffset = -currentSlide * 100;
+    inner.style.transform = `translateX(calc(${baseOffset}% + ${offset}px))`;
+  }
 });
 
 inner.addEventListener("touchend", (e) => {
-  let endX = e.changedTouches[0].clientX;
-  if (startX - endX > 50) currentSlide = (currentSlide + 1) % totalSlides;
-  else if (endX - startX > 50) currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+  if (!swipeState.isSwiping) {
+    swipeState.startX = 0;
+    return;
+  }
+  
+  inner.classList.remove("swiping");
+  const diffX = swipeState.currentX - swipeState.startX;
+  const diffY = Math.abs(e.changedTouches[0].clientY - swipeState.startY);
+  
+  // Only trigger slide change if horizontal movement is significant and greater than vertical
+  if (Math.abs(diffX) > swipeState.threshold && Math.abs(diffX) > diffY * 1.5) {
+    if (diffX < 0) {
+      // Swipe left - next slide
+      currentSlide = (currentSlide + 1) % totalSlides;
+    } else {
+      // Swipe right - previous slide
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    }
+  }
+  
   updateCarousel();
+  swipeState.startX = 0;
+  swipeState.isSwiping = false;
 });
 
+// Desktop drag support (optional, for consistency)
 inner.addEventListener("mousedown", (e) => {
   autoSlide = false;
-  startX = e.clientX;
+  swipeState.startX = e.clientX;
+  swipeState.isSwiping = false;
 });
 
 inner.addEventListener("mouseup", (e) => {
-  let endX = e.clientX;
-  if (startX - endX > 50) currentSlide = (currentSlide + 1) % totalSlides;
-  else if (endX - startX > 50) currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-  updateCarousel();
+  if (!swipeState.startX) return;
+  const diffX = e.clientX - swipeState.startX;
+  if (Math.abs(diffX) > swipeState.threshold) {
+    if (diffX < 0) {
+      currentSlide = (currentSlide + 1) % totalSlides;
+    } else {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    }
+    updateCarousel();
+  }
+  swipeState.startX = 0;
 });
 
 function goToSlide(i) {
@@ -547,7 +692,7 @@ function goToSlide(i) {
   updateCarousel();
 }
 
-/* TESTIMONIAL CAROUSEL */
+/* TESTIMONIAL CAROUSEL - Enhanced Swipe with Vertical Scroll Detection */
 let testimonialSlide = 0;
 const testimonialInner = document.getElementById("testimonialInner");
 const testimonialItems = document.querySelectorAll(".testimonial-item");
@@ -555,6 +700,15 @@ const totalTestimonials = testimonialItems.length;
 const testimonialDots = document.getElementById("testimonialDots");
 
 let testimonialAuto = true;
+
+// Swipe state for testimonial carousel
+let testimonialSwipeState = {
+  startX: 0,
+  startY: 0,
+  currentX: 0,
+  isSwiping: false,
+  threshold: 80 // Increased threshold for better vertical scroll detection
+};
 
 /* Generate dots */
 for (let i = 0; i < totalTestimonials; i++) {
@@ -565,9 +719,7 @@ for (let i = 0; i < totalTestimonials; i++) {
 }
 
 function updateTestimonial() {
-  testimonialInner.style.transform =
-    `translateX(-${testimonialSlide * 100}%)`;
-
+  testimonialInner.style.transform = `translateX(-${testimonialSlide * 100}%)`;
   [...testimonialDots.children].forEach((d, i) => {
     d.classList.toggle("active", i === testimonialSlide);
   });
@@ -581,38 +733,81 @@ function nextTestimonial() {
 
 setInterval(nextTestimonial, 5000);
 
-/* Swipe support */
-let testimonialStartX = 0;
-
+// Enhanced touch handlers with vertical scroll detection
 testimonialInner.addEventListener("touchstart", (e) => {
   testimonialAuto = false;
-  testimonialStartX = e.touches[0].clientX;
+  testimonialSwipeState.startX = e.touches[0].clientX;
+  testimonialSwipeState.startY = e.touches[0].clientY;
+  testimonialSwipeState.isSwiping = false;
+});
+
+testimonialInner.addEventListener("touchmove", (e) => {
+  if (!testimonialSwipeState.startX) return;
+  
+  testimonialSwipeState.currentX = e.touches[0].clientX;
+  const currentY = e.touches[0].clientY;
+  const diffX = Math.abs(testimonialSwipeState.currentX - testimonialSwipeState.startX);
+  const diffY = Math.abs(currentY - testimonialSwipeState.startY);
+  
+  // Only start swiping if horizontal movement is significantly greater than vertical
+  if (diffX > 10 && diffX > diffY * 1.5) {
+    if (!testimonialSwipeState.isSwiping) {
+      testimonialSwipeState.isSwiping = true;
+      testimonialInner.classList.add("swiping");
+    }
+    
+    // Calculate offset during swipe
+    const offset = testimonialSwipeState.currentX - testimonialSwipeState.startX;
+    const baseOffset = -testimonialSlide * 100;
+    testimonialInner.style.transform = `translateX(calc(${baseOffset}% + ${offset}px))`;
+  }
 });
 
 testimonialInner.addEventListener("touchend", (e) => {
-  let end = e.changedTouches[0].clientX;
-  if (testimonialStartX - end > 50)
-    testimonialSlide = (testimonialSlide + 1) % totalTestimonials;
-  else if (end - testimonialStartX > 50)
-    testimonialSlide = (testimonialSlide - 1 + totalTestimonials) % totalTestimonials;
-
+  if (!testimonialSwipeState.isSwiping) {
+    testimonialSwipeState.startX = 0;
+    return;
+  }
+  
+  testimonialInner.classList.remove("swiping");
+  const diffX = testimonialSwipeState.currentX - testimonialSwipeState.startX;
+  const diffY = Math.abs(e.changedTouches[0].clientY - testimonialSwipeState.startY);
+  
+  // Only trigger slide change if horizontal movement is significant and greater than vertical
+  if (Math.abs(diffX) > testimonialSwipeState.threshold && Math.abs(diffX) > diffY * 1.5) {
+    if (diffX < 0) {
+      // Swipe left - next slide
+      testimonialSlide = (testimonialSlide + 1) % totalTestimonials;
+    } else {
+      // Swipe right - previous slide
+      testimonialSlide = (testimonialSlide - 1 + totalTestimonials) % totalTestimonials;
+    }
+  }
+  
   updateTestimonial();
+  testimonialSwipeState.startX = 0;
+  testimonialSwipeState.isSwiping = false;
 });
 
 /* Desktop drag */
 testimonialInner.addEventListener("mousedown", (e) => {
   testimonialAuto = false;
-  testimonialStartX = e.clientX;
+  testimonialSwipeState.startX = e.clientX;
+  testimonialSwipeState.isSwiping = false;
 });
 
 testimonialInner.addEventListener("mouseup", (e) => {
-  let end = e.clientX;
-  if (testimonialStartX - end > 50)
-    testimonialSlide = (testimonialSlide + 1) % totalTestimonials;
-  else if (end - testimonialStartX > 50)
-    testimonialSlide = (testimonialSlide - 1 + totalTestimonials) % totalTestimonials;
-
-  updateTestimonial();
+  if (!testimonialSwipeState.startX) return;
+  const diffX = e.clientX - testimonialSwipeState.startX;
+  if (Math.abs(diffX) > testimonialSwipeState.threshold) {
+    if (diffX < 0) {
+      testimonialSlide = (testimonialSlide + 1) % totalTestimonials;
+    } else {
+      testimonialSlide = (testimonialSlide - 1 + totalTestimonials) % totalTestimonials;
+    }
+    updateTestimonial();
+  }
+  testimonialSwipeState.startX = 0;
 });
 
 function goToTestimonial(i) {
@@ -626,6 +821,39 @@ let tb=0;const trustInner=document.getElementById("trustInner");const trustDots=
 for(let i=0;i<trustTotal;i++){let d=document.createElement("span");if(i===0)d.classList.add("active");d.onclick=()=>{tb=i;updateTB();};trustDots.appendChild(d);} 
 function updateTB(){trustInner.style.transform=`translateX(-${tb*100}%)`;[...trustDots.children].forEach((d,i)=>d.classList.toggle("active",i===tb));}
 setInterval(()=>{tb=(tb+1)%trustTotal;updateTB();},3500);
+
+/* INTERNATIONAL PHONE INPUT - Initialize with IP-based country detection */
+const phoneInput = document.getElementById("phone");
+if (phoneInput) {
+  const iti = window.intlTelInput(phoneInput, {
+    initialCountry: "auto", // Auto-detect country by IP
+    geoIpLookup: function(callback) {
+      // Use ipapi.co for free IP geolocation (no API key needed)
+      fetch("https://ipapi.co/json/")
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          callback(data.country_code || "us");
+        })
+        .catch(function() {
+          callback("us"); // Fallback to US if detection fails
+        });
+    },
+    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/utils.js",
+    preferredCountries: ["us", "gb", "de", "fr", "it", "es", "nl", "be", "ch", "at"],
+    separateDialCode: false,
+    nationalMode: false
+  });
+
+  // Update form submission to include country code
+  const form = phoneInput.closest("form");
+  if (form) {
+    form.addEventListener("submit", function(e) {
+      // Get the full international number
+      const fullNumber = iti.getNumber();
+      phoneInput.value = fullNumber;
+    });
+  }
+}
 
 </script>
 
