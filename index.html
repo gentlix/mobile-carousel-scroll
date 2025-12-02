@@ -445,7 +445,7 @@
     background: #fff;
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     margin-bottom: 30px;
-    touch-action: pan-y pinch-zoom; /* Allow vertical scrolling, prevent accidental horizontal */
+    touch-action: pan-x pan-y pinch-zoom; /* Allow both horizontal and vertical panning */
   }
 
   .carousel-inner {
@@ -486,13 +486,18 @@
     border: 1px solid #eee;
   }
 
-  /* MAIN DOTS */
+  /* CAROUSEL DOTS - Shared */
   .carousel-dots {
     text-align: center;
     padding: 12px 0;
   }
 
-  .carousel-dots span {
+  .testimonial-dots {
+    text-align: center;
+    margin-top: 14px;
+  }
+
+  .carousel-dots span, .testimonial-dots span {
     height: 9px;
     width: 9px;
     margin: 0 4px;
@@ -502,12 +507,12 @@
     cursor: pointer;
   }
 
-  .carousel-dots .active {
+  .carousel-dots .active, .testimonial-dots .active {
     background-color: #111;
   }
 
-  /* STEPS TIMELINE */
-  .steps-box {
+  /* SHARED BOX STYLES */
+  .steps-box, .success-box, .testimonial-carousel {
     background: #fff;
     padding: 25px;
     margin-top: 20px;
@@ -515,7 +520,18 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
   }
 
-  .steps-title {
+  .testimonial-carousel {
+    max-width: 100%;
+    overflow: hidden;
+    touch-action: pan-x pan-y pinch-zoom;
+  }
+
+  .success-box {
+    margin-top: 25px;
+  }
+
+  /* SHARED TITLES */
+  .steps-title, .success-title, .testimonial-title {
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 20px;
@@ -556,19 +572,6 @@
   }
 
   /* SUCCESS STORIES */
-  .success-box {
-    background: #fff;
-    padding: 25px;
-    margin-top: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  }
-
-  .success-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
 
   .success-card {
     background: #f9f9f9;
@@ -591,33 +594,16 @@
     margin: 0;
   }
 
-  /* TESTIMONIAL CAROUSEL FIXED */
-  .testimonial-carousel {
-    background: #fff;
-    padding: 25px;
-    margin-top: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    max-width: 100%;
-    overflow: hidden;
-    touch-action: pan-y pinch-zoom; /* Allow vertical scrolling */
-  }
-
-  .testimonial-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
-
+  /* TESTIMONIAL CAROUSEL */
   .testimonial-inner {
     display: flex;
     width: 100%;
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform; /* Optimize for smooth animations */
+    will-change: transform;
   }
 
-  .testimonial-inner.swiping {
-    transition: none; /* Disable transition during active swipe */
+  .testimonial-inner.swiping, .carousel-inner.swiping {
+    transition: none;
   }
 
   .testimonial-item {
@@ -643,24 +629,6 @@
     margin: 0;
   }
 
-  .testimonial-dots {
-    text-align: center;
-    margin-top: 14px;
-  }
-
-  .testimonial-dots span {
-    height: 9px;
-    width: 9px;
-    margin: 0 4px;
-    background-color: #ccc;
-    display: inline-block;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .testimonial-dots .active {
-    background-color: #111;
-  }
 
 /* TRUST BADGE CAROUSEL (ISOLATED) */
 .trust-carousel {margin-top:25px;width:100%;overflow:hidden;text-align:center;}
@@ -849,249 +817,100 @@
 
 <script>
 
-/* MAIN CAROUSEL - Enhanced Swipe with Vertical Scroll Detection */
-let currentSlide = 0;
-const inner = document.getElementById("carouselInner");
-const slides = document.querySelectorAll(".carousel-item");
-const totalSlides = slides.length;
-const dots = document.getElementById("dots");
-let autoSlide = true;
+/* REUSABLE CAROUSEL FUNCTION */
+function initCarousel(config) {
+  const { innerId, dotsId, itemSelector, autoInterval = 4000, threshold = 80 } = config;
+  const inner = document.getElementById(innerId);
+  const dots = document.getElementById(dotsId);
+  const items = document.querySelectorAll(itemSelector);
+  if (!inner || !dots || items.length === 0) return;
 
-// Swipe state tracking
-let swipeState = {
-  startX: 0,
-  startY: 0,
-  currentX: 0,
-  isSwiping: false,
-  threshold: 80 // Increased threshold for better vertical scroll detection
-};
+  let currentSlide = 0;
+  let autoSlide = true;
+  const swipeState = { startX: 0, startY: 0, currentX: 0, isSwiping: false, threshold };
 
-for (let i = 0; i < totalSlides; i++) {
-  let dot = document.createElement("span");
-  if (i === 0) dot.classList.add("active");
-  dot.onclick = () => { goToSlide(i); autoSlide = false; };
-  dots.appendChild(dot);
-}
-
-function updateCarousel() {
-  inner.style.transform = `translateX(-${currentSlide * 100}%)`;
-  [...dots.children].forEach((d, i) => {
-    d.classList.toggle("active", i === currentSlide);
+  // Generate dots
+  items.forEach((_, i) => {
+    const dot = document.createElement("span");
+    if (i === 0) dot.classList.add("active");
+    dot.onclick = () => { currentSlide = i; update(); autoSlide = false; };
+    dots.appendChild(dot);
   });
-}
 
-function nextSlide() {
-  if (!autoSlide) return;
-  currentSlide = (currentSlide + 1) % totalSlides;
-  updateCarousel();
-}
+  function update() {
+    inner.style.transform = `translateX(-${currentSlide * 100}%)`;
+    [...dots.children].forEach((d, i) => d.classList.toggle("active", i === currentSlide));
+  }
 
-setInterval(nextSlide, 4000);
+  function next() {
+    if (!autoSlide) return;
+    currentSlide = (currentSlide + 1) % items.length;
+    update();
+  }
 
-// Enhanced touch handlers with vertical scroll detection
-inner.addEventListener("touchstart", (e) => {
-  autoSlide = false;
-  swipeState.startX = e.touches[0].clientX;
-  swipeState.startY = e.touches[0].clientY;
-  swipeState.isSwiping = false;
-});
+  // Touch handlers
+  inner.addEventListener("touchstart", (e) => {
+    autoSlide = false;
+    swipeState.startX = e.touches[0].clientX;
+    swipeState.startY = e.touches[0].clientY;
+    swipeState.isSwiping = false;
+  }, { passive: true });
 
-inner.addEventListener("touchmove", (e) => {
-  if (!swipeState.startX) return;
-  
-  swipeState.currentX = e.touches[0].clientX;
-  const currentY = e.touches[0].clientY;
-  const diffX = Math.abs(swipeState.currentX - swipeState.startX);
-  const diffY = Math.abs(currentY - swipeState.startY);
-  
-  // Only start swiping if horizontal movement is significantly greater than vertical
-  if (diffX > 10 && diffX > diffY * 1.5) {
+  inner.addEventListener("touchmove", (e) => {
+    if (!swipeState.startX) return;
+    swipeState.currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = Math.abs(swipeState.currentX - swipeState.startX);
+    const diffY = Math.abs(currentY - swipeState.startY);
+    if (diffX > 10 && diffX > diffY * 1.5) {
+      e.preventDefault(); // Prevent page scroll when swiping horizontally
+      if (!swipeState.isSwiping) {
+        swipeState.isSwiping = true;
+        inner.classList.add("swiping");
+      }
+      const offset = swipeState.currentX - swipeState.startX;
+      inner.style.transform = `translateX(calc(-${currentSlide * 100}% + ${offset}px))`;
+    }
+  }, { passive: false });
+
+  inner.addEventListener("touchend", (e) => {
     if (!swipeState.isSwiping) {
-      swipeState.isSwiping = true;
-      inner.classList.add("swiping");
+      swipeState.startX = 0;
+      return;
     }
-    
-    // Calculate offset during swipe
-    const offset = swipeState.currentX - swipeState.startX;
-    const baseOffset = -currentSlide * 100;
-    inner.style.transform = `translateX(calc(${baseOffset}% + ${offset}px))`;
-  }
-});
-
-inner.addEventListener("touchend", (e) => {
-  if (!swipeState.isSwiping) {
+    inner.classList.remove("swiping");
+    const diffX = swipeState.currentX - swipeState.startX;
+    const diffY = Math.abs(e.changedTouches[0].clientY - swipeState.startY);
+    if (Math.abs(diffX) > swipeState.threshold && Math.abs(diffX) > diffY * 1.5) {
+      currentSlide = diffX < 0 ? (currentSlide + 1) % items.length : (currentSlide - 1 + items.length) % items.length;
+    }
+    update();
     swipeState.startX = 0;
-    return;
-  }
-  
-  inner.classList.remove("swiping");
-  const diffX = swipeState.currentX - swipeState.startX;
-  const diffY = Math.abs(e.changedTouches[0].clientY - swipeState.startY);
-  
-  // Only trigger slide change if horizontal movement is significant and greater than vertical
-  if (Math.abs(diffX) > swipeState.threshold && Math.abs(diffX) > diffY * 1.5) {
-    if (diffX < 0) {
-      // Swipe left - next slide
-      currentSlide = (currentSlide + 1) % totalSlides;
-    } else {
-      // Swipe right - previous slide
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-    }
-  }
-  
-  updateCarousel();
-  swipeState.startX = 0;
-  swipeState.isSwiping = false;
-});
+    swipeState.isSwiping = false;
+  }, { passive: true });
 
-// Desktop drag support (optional, for consistency)
-inner.addEventListener("mousedown", (e) => {
-  autoSlide = false;
-  swipeState.startX = e.clientX;
-  swipeState.isSwiping = false;
-});
-
-inner.addEventListener("mouseup", (e) => {
-  if (!swipeState.startX) return;
-  const diffX = e.clientX - swipeState.startX;
-  if (Math.abs(diffX) > swipeState.threshold) {
-    if (diffX < 0) {
-      currentSlide = (currentSlide + 1) % totalSlides;
-    } else {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-    }
-    updateCarousel();
-  }
-  swipeState.startX = 0;
-});
-
-function goToSlide(i) {
-  currentSlide = i;
-  updateCarousel();
-}
-
-/* TESTIMONIAL CAROUSEL - Enhanced Swipe with Vertical Scroll Detection */
-let testimonialSlide = 0;
-const testimonialInner = document.getElementById("testimonialInner");
-const testimonialItems = document.querySelectorAll(".testimonial-item");
-const totalTestimonials = testimonialItems.length;
-const testimonialDots = document.getElementById("testimonialDots");
-
-let testimonialAuto = true;
-
-// Swipe state for testimonial carousel
-let testimonialSwipeState = {
-  startX: 0,
-  startY: 0,
-  currentX: 0,
-  isSwiping: false,
-  threshold: 80 // Increased threshold for better vertical scroll detection
-};
-
-/* Generate dots */
-for (let i = 0; i < totalTestimonials; i++) {
-  let dot = document.createElement("span");
-  if (i === 0) dot.classList.add("active");
-  dot.onclick = () => { goToTestimonial(i); testimonialAuto = false; };
-  testimonialDots.appendChild(dot);
-}
-
-function updateTestimonial() {
-  testimonialInner.style.transform = `translateX(-${testimonialSlide * 100}%)`;
-  [...testimonialDots.children].forEach((d, i) => {
-    d.classList.toggle("active", i === testimonialSlide);
+  // Desktop drag
+  inner.addEventListener("mousedown", (e) => {
+    autoSlide = false;
+    swipeState.startX = e.clientX;
   });
+
+  inner.addEventListener("mouseup", (e) => {
+    if (!swipeState.startX) return;
+    const diffX = e.clientX - swipeState.startX;
+    if (Math.abs(diffX) > swipeState.threshold) {
+      currentSlide = diffX < 0 ? (currentSlide + 1) % items.length : (currentSlide - 1 + items.length) % items.length;
+      update();
+    }
+    swipeState.startX = 0;
+  });
+
+  setInterval(next, autoInterval);
 }
 
-function nextTestimonial() {
-  if (!testimonialAuto) return;
-  testimonialSlide = (testimonialSlide + 1) % totalTestimonials;
-  updateTestimonial();
-}
-
-setInterval(nextTestimonial, 5000);
-
-// Enhanced touch handlers with vertical scroll detection
-testimonialInner.addEventListener("touchstart", (e) => {
-  testimonialAuto = false;
-  testimonialSwipeState.startX = e.touches[0].clientX;
-  testimonialSwipeState.startY = e.touches[0].clientY;
-  testimonialSwipeState.isSwiping = false;
-});
-
-testimonialInner.addEventListener("touchmove", (e) => {
-  if (!testimonialSwipeState.startX) return;
-  
-  testimonialSwipeState.currentX = e.touches[0].clientX;
-  const currentY = e.touches[0].clientY;
-  const diffX = Math.abs(testimonialSwipeState.currentX - testimonialSwipeState.startX);
-  const diffY = Math.abs(currentY - testimonialSwipeState.startY);
-  
-  // Only start swiping if horizontal movement is significantly greater than vertical
-  if (diffX > 10 && diffX > diffY * 1.5) {
-    if (!testimonialSwipeState.isSwiping) {
-      testimonialSwipeState.isSwiping = true;
-      testimonialInner.classList.add("swiping");
-    }
-    
-    // Calculate offset during swipe
-    const offset = testimonialSwipeState.currentX - testimonialSwipeState.startX;
-    const baseOffset = -testimonialSlide * 100;
-    testimonialInner.style.transform = `translateX(calc(${baseOffset}% + ${offset}px))`;
-  }
-});
-
-testimonialInner.addEventListener("touchend", (e) => {
-  if (!testimonialSwipeState.isSwiping) {
-    testimonialSwipeState.startX = 0;
-    return;
-  }
-  
-  testimonialInner.classList.remove("swiping");
-  const diffX = testimonialSwipeState.currentX - testimonialSwipeState.startX;
-  const diffY = Math.abs(e.changedTouches[0].clientY - testimonialSwipeState.startY);
-  
-  // Only trigger slide change if horizontal movement is significant and greater than vertical
-  if (Math.abs(diffX) > testimonialSwipeState.threshold && Math.abs(diffX) > diffY * 1.5) {
-    if (diffX < 0) {
-      // Swipe left - next slide
-      testimonialSlide = (testimonialSlide + 1) % totalTestimonials;
-    } else {
-      // Swipe right - previous slide
-      testimonialSlide = (testimonialSlide - 1 + totalTestimonials) % totalTestimonials;
-    }
-  }
-  
-  updateTestimonial();
-  testimonialSwipeState.startX = 0;
-  testimonialSwipeState.isSwiping = false;
-});
-
-/* Desktop drag */
-testimonialInner.addEventListener("mousedown", (e) => {
-  testimonialAuto = false;
-  testimonialSwipeState.startX = e.clientX;
-  testimonialSwipeState.isSwiping = false;
-});
-
-testimonialInner.addEventListener("mouseup", (e) => {
-  if (!testimonialSwipeState.startX) return;
-  const diffX = e.clientX - testimonialSwipeState.startX;
-  if (Math.abs(diffX) > testimonialSwipeState.threshold) {
-    if (diffX < 0) {
-      testimonialSlide = (testimonialSlide + 1) % totalTestimonials;
-    } else {
-      testimonialSlide = (testimonialSlide - 1 + totalTestimonials) % totalTestimonials;
-    }
-    updateTestimonial();
-  }
-  testimonialSwipeState.startX = 0;
-});
-
-function goToTestimonial(i) {
-  testimonialSlide = i;
-  updateTestimonial();
-}
+// Initialize carousels
+initCarousel({ innerId: "carouselInner", dotsId: "dots", itemSelector: ".carousel-item", autoInterval: 4000 });
+initCarousel({ innerId: "testimonialInner", dotsId: "testimonialDots", itemSelector: ".testimonial-item", autoInterval: 5000 });
 
 
 /* TRUST BADGE CAROUSEL */
@@ -1134,37 +953,19 @@ if (phoneInput) {
     phoneInput.placeholder = "";
     
     // Add country code prefix when country changes
-    phoneInput.addEventListener("countrychange", function() {
-      const countryData = iti.getSelectedCountryData();
-      if (countryData && countryData.dialCode) {
-        // Get current value without country code
-        const currentValue = phoneInput.value.replace(/^\+\d+\s*/, "").trim();
-        // Only update if there's no value or if value doesn't start with the dial code
-        if (!currentValue || !phoneInput.value.startsWith(`+${countryData.dialCode}`)) {
-          // Don't auto-add dial code if user has already typed something
-          if (!currentValue) {
-            phoneInput.value = `+${countryData.dialCode}`;
-          } else {
-            // Only update if the value doesn't already have a country code
-            const hasCountryCode = /^\+\d+/.test(phoneInput.value);
-            if (!hasCountryCode) {
-              phoneInput.value = `+${countryData.dialCode} ${currentValue}`;
-            }
-          }
-        }
+    phoneInput.addEventListener("countrychange", () => {
+      const data = iti.getSelectedCountryData();
+      if (!data?.dialCode) return;
+      const val = phoneInput.value.replace(/^\+\d+\s*/, "").trim();
+      if (!val) {
+        phoneInput.value = `+${data.dialCode}`;
+      } else if (!phoneInput.value.startsWith(`+${data.dialCode}`) && !/^\+\d+/.test(phoneInput.value)) {
+        phoneInput.value = `+${data.dialCode} ${val}`;
       }
     });
 
-    // Format phone number as user types (with proper cursor handling)
-    let isFormatting = false;
-    let lastFormattedValue = "";
-    let formattingTimeout = null;
-    
-    // Handle click on input field - don't interfere with dropdown
-    phoneInput.addEventListener("click", function(e) {
-      // Allow normal input clicking behavior
-      e.stopPropagation();
-    });
+    // Handle click on input field
+    phoneInput.addEventListener("click", (e) => e.stopPropagation());
 
     // Simple backdrop
     let backdrop = null, scrollPos = 0;
@@ -1192,15 +993,10 @@ if (phoneInput) {
     phoneInput.closest(".iti")?.querySelector(".iti__selected-country")?.addEventListener("click", () => setTimeout(update, 100));
 
     // Update form submission to include country code
-    const form = phoneInput.closest("form");
-    if (form) {
-      form.addEventListener("submit", function(e) {
-        const fullNumber = iti.getNumber();
-        if (fullNumber) {
-          phoneInput.value = fullNumber;
-        }
-      });
-    }
+    phoneInput.closest("form")?.addEventListener("submit", () => {
+      const num = iti.getNumber();
+      if (num) phoneInput.value = num;
+    });
   };
   document.head.appendChild(script);
 }
