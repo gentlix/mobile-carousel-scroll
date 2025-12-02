@@ -1,1021 +1,1116 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ViltaGlobal – Forex & Crypto Recovery Experts</title>
-
-<!-- International Telephone Input Library -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/css/intlTelInput.css">
-<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/intlTelInput.min.js"></script>
-
-<style>
-  body {
-    margin: 0;
-    font-family: "Inter", sans-serif;
-    background: #fafafa;
-    color: #111;
-  }
-
-  .container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 40px 20px;
-  }
-
-  .logo {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .logo img {
-    height: 60px;
-  }
-
-  h1 {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 10px;
-  }
-
-  p.subtitle {
-    text-align: center;
-    color: #555;
-    font-size: 15px;
-    margin-bottom: 30px;
-  }
-
-  /* FORM */
-  form {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  }
-
-  input, textarea {
-    width: 100%;
-    padding: 14px;
-    margin-top: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 15px;
-    box-sizing: border-box;
-  }
-
-  /* International Phone Input Styling - New Structure */
-  .iti {
-    width: 100%;
-    margin-top: 12px;
-    position: relative;
-  }
-
-  .iti__country-container {
-    position: relative;
-  }
-
-  .iti__selected-country {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    z-index: 2;
-    border: none;
-    background: #f8f8f8;
-    border-right: 1px solid #ddd;
-    border-radius: 8px 0 0 8px;
-    padding: 0 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    min-width: 68px;
-    height: 100%;
-  }
-
-  .iti__selected-country:hover {
-    background: #f0f0f0;
-  }
-
-  .iti__tel-input:focus ~ .iti__country-container .iti__selected-country {
-    border-right-color: #111;
-    background: #f5f5f5;
-  }
-
-  .iti__selected-country-primary {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .iti__flag {
-    width: 22px;
-    height: 16px;
-    border-radius: 2px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    flex-shrink: 0;
-  }
-
-  .iti__arrow {
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 5px solid #666;
-    transition: transform 0.2s, border-top-color 0.2s;
-    flex-shrink: 0;
-  }
-
-  .iti__selected-country:hover .iti__arrow {
-    border-top-color: #111;
-  }
-
-  .iti__selected-country[aria-expanded="true"] .iti__arrow {
-    transform: rotate(180deg);
-    border-top-color: #111;
-  }
-
-  .iti__tel-input {
-    margin-top: 0;
-    padding-left: 50px;
-    padding-right: 14px;
-    width: 100%;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
-  }
-
-  .iti__tel-input:focus {
-    border-color: #111;
-    outline: none;
-  }
-
-  /* Dropdown Content */
-  .iti__dropdown-content {
-    position: fixed;
-    z-index: 10000;
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    width: calc(100vw - 60px);
-    max-width: 500px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 70vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    pointer-events: auto;
-  }
-
-  .iti--fullscreen-popup .iti__dropdown-content {
-    max-height: 70vh;
-  }
-
-  .iti__dropdown-content.iti__hide {
-    display: none !important;
-  }
-
-  /* Search Input Wrapper */
-  .iti__search-input-wrapper {
-    padding: 12px;
-    border-bottom: 1px solid #e8e8e8;
-    background: #fff;
-    position: relative;
-    flex-shrink: 0;
-    pointer-events: auto;
-    z-index: 2;
-  }
-
-  .iti__search-icon {
-    position: absolute;
-    left: 24px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 14px;
-    height: 14px;
-  }
-
-  .iti__search-icon-svg {
-    width: 14px;
-    height: 14px;
-    fill: none;
-    stroke: #999;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    display: block;
-  }
-
-  .iti__search-icon-svg circle {
-    fill: none;
-    stroke: inherit;
-  }
-
-  .iti__search-icon-svg line {
-    stroke: inherit;
-    stroke-linecap: round;
-  }
-
-  .iti__search-input {
-    margin-top: 0;
-    width: 100%;
-    padding: 10px 14px 10px 42px;
-    border-radius: 6px;
-    font-size: 15px;
-    background: #fafafa;
-    outline: none;
-    transition: all 0.2s;
-    box-sizing: border-box;
-    pointer-events: auto;
-    position: relative;
-    z-index: 1;
-
-    width: 100%;
-    background-image: url('https://img.icons8.com/?size=100&id=132&format=png&color=000000');
-    background-position: 10px 10px; 
-    background-repeat: no-repeat;
-    background-size: 20px;
-  }  
-
-  .iti__search-input-wrapper:focus-within .iti__search-icon .iti__search-icon-svg {
-    stroke: #111;
-  }
-
-  .iti__search-input::placeholder {
-    color: #999;
-  }
-
-  .iti__search-clear {
-    position: absolute;
-    right: 24px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .iti__search-clear.iti__hide {
-    display: none;
-  }
-
-  .iti__search-clear-svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  /* Country List */
-  .iti__country-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex: 1;
-    pointer-events: auto;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Custom scrollbar */
-  .iti__country-list::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .iti__country-list::-webkit-scrollbar-track {
-    background: #f5f5f5;
-    border-radius: 3px;
-  }
-
-  .iti__country-list::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 3px;
-  }
-
-  .iti__country-list::-webkit-scrollbar-thumb:hover {
-    background: #aaa;
-  }
-
-  .iti__country {
-    padding: 12px 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #f5f5f5;
-    transition: background-color 0.15s;
-    pointer-events: auto;
-    position: relative;
-    z-index: 1;
-  }
-
-  .iti__country:last-child {
-    border-bottom: none;
-  }
-
-  .iti__country:hover {
-    background: #f8f8f8;
-  }
-
-  .iti__country.iti__highlight {
-    background: #f0f0f0;
-  }
-
-  .iti__country-list .iti__flag {
-    width: 22px;
-    height: 16px;
-    border-radius: 2px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    margin-right: 12px;
-    flex-shrink: 0;
-  }
-
-  .iti__country-name {
-    font-size: 15px;
-    color: #111;
-    flex: 1;
-    font-weight: 400;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .iti__country.iti__highlight .iti__country-name {
-    font-weight: 500;
-  }
-
-  .iti__dial-code {
-    font-size: 14px;
-    color: #666;
-    margin-left: auto;
-    padding-left: 12px;
-    font-weight: 500;
-    flex-shrink: 0;
-  }
-
-  .iti__country:hover .iti__dial-code,
-  .iti__country.iti__highlight .iti__dial-code {
-    color: #111;
-  }
-
-  .iti__a11y-text {
-    position: absolute;
-    left: -10000px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-  }
-
-  .iti__no-results {
-    padding: 16px;
-    text-align: center;
-    color: #666;
-    font-size: 14px;
-  }
-
-  .iti__no-results.iti__hide {
-    display: none;
-  }
-
-  /* Backdrop overlay when dropdown is open */
-  .iti-dropdown-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 0;
-  }
-
-  .iti--container.iti--fullscreen-popup {
-    margin-top: 0;
-    width: calc(100vw - 60px);
-    z-index: 1;
-  }
-
-  /* Prevent body scroll when dropdown is open */
-  body.iti-dropdown-open {
-    overflow: hidden !important;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-  }
-
-  textarea {
-    height: 120px;
-    resize: none;
-  }
-
-  button {
-    margin-top: 18px;
-    width: 100%;
-    padding: 15px;
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  button:hover { background: #000; }
-
-  .small {
-    font-size: 12px;
-    color: #777;
-    margin-top: 12px;
-    text-align: center;
-  }
-
-  /* MAIN CAROUSEL */
-  .carousel {
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-    background: #fff;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    margin-bottom: 30px;
-    touch-action: pan-x; /* Allow horizontal panning for swipe gestures */
-  }
-
-  .carousel-inner {
-    display: flex;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform; /* Optimize for smooth animations */
-    touch-action: pan-x; /* Allow horizontal panning */
-  }
-
-  .carousel-inner.swiping {
-    transition: none; /* Disable transition during active swipe */
-  }
-
-  .carousel-item {
-    min-width: 100%;
-    padding: 28px;
-    box-sizing: border-box;
-  }
-
-  .carousel-item h2 {
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 18px;
-  }
-
-  .carousel-item p {
-    font-size: 16px;
-    color: #444;
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
-
-  .point {
-    background: #f7f7f7;
-    padding: 14px 18px;
-    border-radius: 10px;
-    font-size: 15px;
-    margin-top: 12px;
-    border: 1px solid #eee;
-  }
-
-  /* CAROUSEL DOTS - Shared */
-  .carousel-dots {
-    text-align: center;
-    padding: 12px 0;
-  }
-
-  .testimonial-dots {
-    text-align: center;
-    margin-top: 14px;
-  }
-
-  .carousel-dots span, .testimonial-dots span {
-    height: 9px;
-    width: 9px;
-    margin: 0 4px;
-    background-color: #ccc;
-    display: inline-block;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .carousel-dots .active, .testimonial-dots .active {
-    background-color: #111;
-  }
-
-  /* SHARED BOX STYLES */
-  .steps-box, .success-box, .testimonial-carousel {
-    background: #fff;
-    padding: 25px;
-    margin-top: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  }
-
-  .testimonial-carousel {
-    max-width: 100%;
-    overflow: hidden;
-    touch-action: pan-x;
-  }
-
-  .success-box {
-    margin-top: 25px;
-  }
-
-  /* SHARED TITLES */
-  .steps-title, .success-title, .testimonial-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
-
-  .timeline-step {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 22px;
-  }
-
-  .timeline-dot {
-    width: 34px;
-    height: 34px;
-    min-width: 34px;
-    border-radius: 50%;
-    background: #111;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    margin-right: 15px;
-    font-size: 15px;
-  }
-
-  .timeline-content h3 {
-    font-size: 17px;
-    margin: 0 0 6px 0;
-    font-weight: 600;
-  }
-
-  .timeline-content p {
-    font-size: 15px;
-    color: #444;
-    line-height: 1.55;
-    margin: 0;
-  }
-
-  /* SUCCESS STORIES */
-
-  .success-card {
-    background: #f9f9f9;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 18px;
-  }
-
-  .success-info h4 {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0 0 8px 0;
-  }
-
-  .success-info p {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.55;
-    margin: 0;
-  }
-
-  /* TESTIMONIAL CAROUSEL */
-  .testimonial-inner {
-    display: flex;
-    width: 100%;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-    touch-action: pan-x; /* Allow horizontal panning */
-  }
-
-  .testimonial-inner.swiping, .carousel-inner.swiping {
-    transition: none;
-  }
-
-  .testimonial-item {
-    min-width: 100%;       /* FIX */
-    background: #f9f9f9;
-    border-radius: 12px;
-    border: 1px solid #eee;
-    padding: 22px;
-    box-sizing: border-box; /* FIX */
-  }
-
-  .testimonial-text {
-    font-size: 16px;
-    line-height: 1.55;
-    color: #444;
-    margin: 0 0 14px 0;
-  }
-
-  .testimonial-author {
-    font-size: 15px;
-    font-weight: 600;
-    color: #111;
-    margin: 0;
-  }
-
-
-/* TRUST BADGE CAROUSEL (ISOLATED) */
-.trust-carousel {margin-top:25px;width:100%;overflow:hidden;text-align:center;}
-.trust-carousel .trust-inner {display:flex;width:100%;transition:transform 0.45s ease;}
-.trust-carousel .trust-item{min-width:100%;padding:15px 0;}
-.trust-carousel .trust-icon{font-size:40px;margin-bottom:6px;}
-.trust-carousel .trust-label{font-size:15px;font-weight:600;color:#444;}
-.trust-carousel .trust-dots{margin-top:10px;}
-.trust-carousel .trust-dots span{height:8px;width:8px;margin:0 4px;background:#ccc;display:inline-block;border-radius:50%;cursor:pointer;}
-.trust-carousel .trust-dots .active{background:#111;}
-.trust-carousel .trust-note{margin-top:10px;color:#666;font-size:13px;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViltaGlobal – Forex & Crypto Recovery Experts</title>
+
+  <!-- International Telephone Input Library -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/css/intlTelInput.css">
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/intlTelInput.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: #fafafa;
+      color: #111;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      text-align: center;
+      color: #555;
+      font-size: 15px;
+      margin-bottom: 30px;
+    }
+
+    /* FORM */
+    form {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    /* International Phone Input Styling - New Structure */
+    .iti {
+      width: 100%;
+      margin-top: 12px;
+      position: relative;
+    }
+
+    .iti__country-container {
+      position: relative;
+    }
+
+    .iti__selected-country {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      z-index: 2;
+      border: none;
+      background: #f8f8f8;
+      border-right: 1px solid #ddd;
+      border-radius: 8px 0 0 8px;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 68px;
+      height: 100%;
+    }
+
+    .iti__selected-country:hover {
+      background: #f0f0f0;
+    }
+
+    .iti__tel-input:focus~.iti__country-container .iti__selected-country {
+      border-right-color: #111;
+      background: #f5f5f5;
+    }
+
+    .iti__selected-country-primary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .iti__flag {
+      width: 22px;
+      height: 16px;
+      border-radius: 2px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+    }
+
+    .iti__arrow {
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid #666;
+      transition: transform 0.2s, border-top-color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .iti__selected-country:hover .iti__arrow {
+      border-top-color: #111;
+    }
+
+    .iti__selected-country[aria-expanded="true"] .iti__arrow {
+      transform: rotate(180deg);
+      border-top-color: #111;
+    }
+
+    .iti__tel-input {
+      margin-top: 0;
+      padding-left: 50px;
+      padding-right: 14px;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    .iti__tel-input:focus {
+      border-color: #111;
+      outline: none;
+    }
+
+    /* Dropdown Content */
+    .iti__dropdown-content {
+      position: fixed;
+      z-index: 10000;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      width: calc(100vw - 60px);
+      max-width: 500px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      max-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      pointer-events: auto;
+    }
+
+    .iti--fullscreen-popup .iti__dropdown-content {
+      max-height: 70vh;
+    }
+
+    .iti__dropdown-content.iti__hide {
+      display: none !important;
+    }
+
+    /* Search Input Wrapper */
+    .iti__search-input-wrapper {
+      padding: 12px;
+      border-bottom: 1px solid #e8e8e8;
+      background: #fff;
+      position: relative;
+      flex-shrink: 0;
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    .iti__search-icon {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+    }
+
+    .iti__search-icon-svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: #999;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+
+    .iti__search-icon-svg circle {
+      fill: none;
+      stroke: inherit;
+    }
+
+    .iti__search-icon-svg line {
+      stroke: inherit;
+      stroke-linecap: round;
+    }
+
+    .iti__search-input {
+      margin-top: 0;
+      width: 100%;
+      padding: 10px 14px 10px 42px;
+      border-radius: 6px;
+      font-size: 15px;
+      background: #fafafa;
+      outline: none;
+      transition: all 0.2s;
+      box-sizing: border-box;
+      pointer-events: auto;
+      position: relative;
+      z-index: 1;
+
+      width: 100%;
+      background-image: url('https://img.icons8.com/?size=100&id=132&format=png&color=000000');
+      background-position: 10px 10px;
+      background-repeat: no-repeat;
+      background-size: 20px;
+    }
+
+    .iti__search-input-wrapper:focus-within .iti__search-icon .iti__search-icon-svg {
+      stroke: #111;
+    }
+
+    .iti__search-input::placeholder {
+      color: #999;
+    }
+
+    .iti__search-clear {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .iti__search-clear.iti__hide {
+      display: none;
+    }
+
+    .iti__search-clear-svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Country List */
+    .iti__country-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
+      pointer-events: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Custom scrollbar */
+    .iti__country-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .iti__country-list::-webkit-scrollbar-track {
+      background: #f5f5f5;
+      border-radius: 3px;
+    }
+
+    .iti__country-list::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+
+    .iti__country-list::-webkit-scrollbar-thumb:hover {
+      background: #aaa;
+    }
+
+    .iti__country {
+      padding: 12px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #f5f5f5;
+      transition: background-color 0.15s;
+      pointer-events: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .iti__country:last-child {
+      border-bottom: none;
+    }
+
+    .iti__country:hover {
+      background: #f8f8f8;
+    }
+
+    .iti__country.iti__highlight {
+      background: #f0f0f0;
+    }
+
+    .iti__country-list .iti__flag {
+      width: 22px;
+      height: 16px;
+      border-radius: 2px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .iti__country-name {
+      font-size: 15px;
+      color: #111;
+      flex: 1;
+      font-weight: 400;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .iti__country.iti__highlight .iti__country-name {
+      font-weight: 500;
+    }
+
+    .iti__dial-code {
+      font-size: 14px;
+      color: #666;
+      margin-left: auto;
+      padding-left: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .iti__country:hover .iti__dial-code,
+    .iti__country.iti__highlight .iti__dial-code {
+      color: #111;
+    }
+
+    .iti__a11y-text {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .iti__no-results {
+      padding: 16px;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .iti__no-results.iti__hide {
+      display: none;
+    }
+
+    /* Backdrop overlay when dropdown is open */
+    .iti-dropdown-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 0;
+    }
+
+    .iti--container.iti--fullscreen-popup {
+      margin-top: 0;
+      width: calc(100vw - 60px);
+      z-index: 1;
+    }
+
+    /* Prevent body scroll when dropdown is open */
+    body.iti-dropdown-open {
+      overflow: hidden !important;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+    }
+
+    textarea {
+      height: 120px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 18px;
+      width: 100%;
+      padding: 15px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #000;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #777;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    /* MAIN CAROUSEL */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      margin-bottom: 30px;
+    }
+
+    .carousel-inner {
+      display: flex;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+      /* Optimize for smooth animations */
+      touch-action: pan-x pan-y;
+    }
+
+    .carousel-inner.swiping {
+      transition: none;
+      /* Disable transition during active swipe */
+    }
+
+    .carousel-item {
+      min-width: 100%;
+      padding: 28px;
+      box-sizing: border-box;
+    }
+
+    .carousel-item h2 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .carousel-item p {
+      font-size: 16px;
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .point {
+      background: #f7f7f7;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 15px;
+      margin-top: 12px;
+      border: 1px solid #eee;
+    }
+
+    /* CAROUSEL DOTS - Shared */
+    .carousel-dots {
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .testimonial-dots {
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    .carousel-dots span,
+    .testimonial-dots span {
+      height: 9px;
+      width: 9px;
+      margin: 0 4px;
+      background-color: #ccc;
+      display: inline-block;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .carousel-dots .active,
+    .testimonial-dots .active {
+      background-color: #111;
+    }
+
+    /* SHARED BOX STYLES */
+    .steps-box,
+    .success-box,
+    .testimonial-carousel {
+      background: #fff;
+      padding: 25px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .testimonial-carousel {
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .success-box {
+      margin-top: 25px;
+    }
+
+    /* SHARED TITLES */
+    .steps-title,
+    .success-title,
+    .testimonial-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .timeline-step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+
+    .timeline-dot {
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      margin-right: 15px;
+      font-size: 15px;
+    }
+
+    .timeline-content h3 {
+      font-size: 17px;
+      margin: 0 0 6px 0;
+      font-weight: 600;
+    }
+
+    .timeline-content p {
+      font-size: 15px;
+      color: #444;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* SUCCESS STORIES */
+
+    .success-card {
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .success-info h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+
+    .success-info p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* TESTIMONIAL CAROUSEL */
+    .testimonial-inner {
+      display: flex;
+      width: 100%;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+      touch-action: pan-x pan-y;
+      /* Allow horizontal panning */
+    }
+
+    .testimonial-inner.swiping,
+    .carousel-inner.swiping {
+      transition: none;
+    }
+
+    .testimonial-item {
+      min-width: 100%;
+      /* FIX */
+      background: #f9f9f9;
+      border-radius: 12px;
+      border: 1px solid #eee;
+      padding: 22px;
+      box-sizing: border-box;
+      /* FIX */
+    }
+
+    .testimonial-text {
+      font-size: 16px;
+      line-height: 1.55;
+      color: #444;
+      margin: 0 0 14px 0;
+    }
+
+    .testimonial-author {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111;
+      margin: 0;
+    }
+
+
+    /* TRUST BADGE CAROUSEL (ISOLATED) */
+    .trust-carousel {
+      margin-top: 25px;
+      width: 100%;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .trust-carousel .trust-inner {
+      display: flex;
+      width: 100%;
+      transition: transform 0.45s ease;
+    }
+
+    .trust-carousel .trust-item {
+      min-width: 100%;
+      padding: 15px 0;
+    }
+
+    .trust-carousel .trust-icon {
+      font-size: 40px;
+      margin-bottom: 6px;
+    }
+
+    .trust-carousel .trust-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .trust-carousel .trust-dots {
+      margin-top: 10px;
+    }
+
+    .trust-carousel .trust-dots span {
+      height: 8px;
+      width: 8px;
+      margin: 0 4px;
+      background: #ccc;
+      display: inline-block;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .trust-carousel .trust-dots .active {
+      background: #111;
+    }
+
+    .trust-carousel .trust-note {
+      margin-top: 10px;
+      color: #666;
+      font-size: 13px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <!-- LOGO -->
-  <div class="logo">
-    <img src="https://vilta.cy/vlogo.png" alt="ViltaGlobal Logo">
-  </div>
-
-  <h1>Start Your Recovery</h1>
-  <p class="subtitle">We assist victims of forex, crypto & investment scams in recovering their funds.</p>
-
-  <!-- CONTACT FORM -->
-  <form action="https://formspree.io/f/yourformid" method="POST">
-    <input type="text" name="Full Name" placeholder="Full Name" required>
-    <input type="tel" id="phone" name="Phone" placeholder="Phone Number" required>
-    <input type="email" name="Email" placeholder="Email Address" required>
-    <textarea name="Case Description" placeholder="Describe your case (optional)"></textarea>
-    <button type="submit">Submit Case</button>
-    <p class="small">By submitting, you agree to be contacted by ViltaGlobal.</p>
-  </form>
-
-  <!-- CAROUSEL -->
-  <div class="carousel" id="carousel">
-    <div class="carousel-inner" id="carouselInner">
-
-      <!-- SLIDE 1 -->
-      <div class="carousel-item">
-        <h2>Who We Are</h2>
-        <p>ViltaGlobal works with legal partners and financial specialists to help clients recover funds lost to fraudulent brokers and online investment schemes.</p>
-        <p>After you submit your case, our team performs a detailed review and contacts you with the next steps.</p>
-        <div class="point">✓ Experienced in forex, crypto & CFD scam cases</div>
-        <div class="point">✓ Evidence preparation & communication with banks / PSPs</div>
-        <div class="point">✓ Transparent process — free evaluation</div>
-      </div>
-
-      <!-- SLIDE 2 -->
-      <div class="carousel-item">
-        <h2>What We Do</h2>
-        <p>We assist with cases involving unauthorized transactions, fake trading platforms, investment fraud and misleading financial advice.</p>
-        <p>Our specialists analyze transactions and prepare documentation understood by banks and PSPs.</p>
-        <div class="point">✓ Tailored case review</div>
-        <div class="point">✓ Legal & financial partner cooperation</div>
-        <div class="point">✓ Strong dispute file preparation</div>
-      </div>
-
-      <!-- SLIDE 3 -->
-      <div class="carousel-item">
-        <h2>Our Commitment</h2>
-        <p>Your privacy and security are our priority. All information is handled confidentially and never shared with unauthorized parties.</p>
-        <p>We provide honest communication and realistic expectations.</p>
-        <div class="point">✓ Confidential handling</div>
-        <div class="point">✓ Clear communication</div>
-        <div class="point">✓ Ethical, transparent approach</div>
-      </div>
-
-      <!-- SLIDE 4 -->
-      <div class="carousel-item">
-        <h2>Our Process</h2>
-        <p>We guide you step-by-step through the recovery workflow, ensuring you're informed at every stage.</p>
-        <p>We work with banks, PSPs, law firms and regulators to maximize recovery chances.</p>
-        <div class="point">1️⃣ Submission & review</div>
-        <div class="point">2️⃣ Evidence collection</div>
-        <div class="point">3️⃣ Bank & PSP action</div>
-      </div>
-
+    <!-- LOGO -->
+    <div class="logo">
+      <img src="https://vilta.cy/vlogo.png" alt="ViltaGlobal Logo">
     </div>
 
-    <div class="carousel-dots" id="dots"></div>
-  </div>
+    <h1>Start Your Recovery</h1>
+    <p class="subtitle">We assist victims of forex, crypto & investment scams in recovering their funds.</p>
 
-  <!-- STEPS -->
-  <div class="steps-box">
-    <h2 class="steps-title">Steps</h2>
+    <!-- CONTACT FORM -->
+    <form action="https://formspree.io/f/yourformid" method="POST">
+      <input type="text" name="Full Name" placeholder="Full Name" required>
+      <input type="tel" id="phone" name="Phone" placeholder="Phone Number" required>
+      <input type="email" name="Email" placeholder="Email Address" required>
+      <textarea name="Case Description" placeholder="Describe your case (optional)"></textarea>
+      <button type="submit">Submit Case</button>
+      <p class="small">By submitting, you agree to be contacted by ViltaGlobal.</p>
+    </form>
 
-    <div class="timeline-step">
-      <div class="timeline-dot">1</div>
-      <div class="timeline-content">
-        <h3>Submit Your Case</h3>
-        <p>Provide a short description of what happened so we can understand the type of scam and payments involved.</p>
-      </div>
-    </div>
+    <!-- CAROUSEL -->
+    <div class="carousel" id="carousel">
+      <div class="carousel-inner" id="carouselInner">
 
-    <div class="timeline-step">
-      <div class="timeline-dot">2</div>
-      <div class="timeline-content">
-        <h3>Case Evaluation</h3>
-        <p>We review your transactions, communication and evidence to determine the best route for recovery.</p>
-      </div>
-    </div>
-
-    <div class="timeline-step">
-      <div class="timeline-dot">3</div>
-      <div class="timeline-content">
-        <h3>Strategy & Remedies</h3>
-        <p>You receive a tailored recovery plan including actions with banks, PSPs or legal partners.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SUCCESS STORIES -->
-  <div class="success-box">
-    <h2 class="success-title">Success Stories</h2>
-
-    <div class="success-card">
-      <div class="success-info">
-        <h4>Dispute Case — €3,200 Refunded</h4>
-        <p>A client was charged by a fraudulent forex platform. After preparing a strong dispute file, the bank issued a full refund.</p>
-      </div>
-    </div>
-
-    <div class="success-card">
-      <div class="success-info">
-        <h4>Settlement Offer — €12,000 Agreement</h4>
-        <p>Using evidence and regulatory pressure, the broker issued a €12,000 settlement as part of a negotiated recovery.</p>
-      </div>
-    </div>
-
-  </div>
-
-
-
-
-
-  <!-- TESTIMONIALS -->
-  <div class="testimonial-carousel" id="testimonialCarousel">
-
-    <h2 class="testimonial-title">What Our Clients Have to Say</h2>
-
-    <div class="elementor-element elementor-element-273a9679 elementor-widget-mobile__width-inherit elementor-widget__width-auto elementor-widget elementor-widget-text-editor" data-id="273a9679" data-element_type="widget" data-widget_type="text-editor.default">
-        <div class="elementor-widget-container">
-                  <p><span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐</span><span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐</span><span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐</span><span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐</span><span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐ </span><strong style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">4.9/5</strong><span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';"> – Based on 3,435 Reviews</span></p>                </div>
+        <!-- SLIDE 1 -->
+        <div class="carousel-item">
+          <h2>Who We Are</h2>
+          <p>ViltaGlobal works with legal partners and financial specialists to help clients recover funds lost to
+            fraudulent brokers and online investment schemes.</p>
+          <p>After you submit your case, our team performs a detailed review and contacts you with the next steps.</p>
+          <div class="point">✓ Experienced in forex, crypto & CFD scam cases</div>
+          <div class="point">✓ Evidence preparation & communication with banks / PSPs</div>
+          <div class="point">✓ Transparent process — free evaluation</div>
         </div>
 
-    <div class="testimonial-inner" id="testimonialInner">
+        <!-- SLIDE 2 -->
+        <div class="carousel-item">
+          <h2>What We Do</h2>
+          <p>We assist with cases involving unauthorized transactions, fake trading platforms, investment fraud and
+            misleading financial advice.</p>
+          <p>Our specialists analyze transactions and prepare documentation understood by banks and PSPs.</p>
+          <div class="point">✓ Tailored case review</div>
+          <div class="point">✓ Legal & financial partner cooperation</div>
+          <div class="point">✓ Strong dispute file preparation</div>
+        </div>
 
-      <div class="testimonial-item">
-        <p class="testimonial-text">
-          “ViltaGlobal helped me recover €7,500. They handled everything professionally and kept me updated throughout.”
-        </p>
-        <p class="testimonial-author">— A.M., Germany</p>
+        <!-- SLIDE 3 -->
+        <div class="carousel-item">
+          <h2>Our Commitment</h2>
+          <p>Your privacy and security are our priority. All information is handled confidentially and never shared with
+            unauthorized parties.</p>
+          <p>We provide honest communication and realistic expectations.</p>
+          <div class="point">✓ Confidential handling</div>
+          <div class="point">✓ Clear communication</div>
+          <div class="point">✓ Ethical, transparent approach</div>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="carousel-item">
+          <h2>Our Process</h2>
+          <p>We guide you step-by-step through the recovery workflow, ensuring you're informed at every stage.</p>
+          <p>We work with banks, PSPs, law firms and regulators to maximize recovery chances.</p>
+          <div class="point">1️⃣ Submission & review</div>
+          <div class="point">2️⃣ Evidence collection</div>
+          <div class="point">3️⃣ Bank & PSP action</div>
+        </div>
+
       </div>
 
-      <div class="testimonial-item">
-        <p class="testimonial-text">
-          “After being scammed by a crypto broker, I had no hope. Within weeks I received a settlement offer thanks to their help.”
-        </p>
-        <p class="testimonial-author">— J.S., United Kingdom</p>
+      <div class="carousel-dots" id="dots"></div>
+    </div>
+
+    <!-- STEPS -->
+    <div class="steps-box">
+      <h2 class="steps-title">Steps</h2>
+
+      <div class="timeline-step">
+        <div class="timeline-dot">1</div>
+        <div class="timeline-content">
+          <h3>Submit Your Case</h3>
+          <p>Provide a short description of what happened so we can understand the type of scam and payments involved.
+          </p>
+        </div>
       </div>
 
-      <div class="testimonial-item">
-        <p class="testimonial-text">
-          “I was embarrassed at first, but they treated me with respect and helped me recover €3,100 through my card issuer.”
-        </p>
-        <p class="testimonial-author">— L.K., Cyprus</p>
+      <div class="timeline-step">
+        <div class="timeline-dot">2</div>
+        <div class="timeline-content">
+          <h3>Case Evaluation</h3>
+          <p>We review your transactions, communication and evidence to determine the best route for recovery.</p>
+        </div>
       </div>
 
-      <div class="testimonial-item">
-        <p class="testimonial-text">
-          “Thanks for everything.”
-        </p>
-        <p class="testimonial-author">— S.J., Italy</p>
+      <div class="timeline-step">
+        <div class="timeline-dot">3</div>
+        <div class="timeline-content">
+          <h3>Strategy & Remedies</h3>
+          <p>You receive a tailored recovery plan including actions with banks, PSPs or legal partners.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS STORIES -->
+    <div class="success-box">
+      <h2 class="success-title">Success Stories</h2>
+
+      <div class="success-card">
+        <div class="success-info">
+          <h4>Dispute Case — €3,200 Refunded</h4>
+          <p>A client was charged by a fraudulent forex platform. After preparing a strong dispute file, the bank issued
+            a full refund.</p>
+        </div>
+      </div>
+
+      <div class="success-card">
+        <div class="success-info">
+          <h4>Settlement Offer — €12,000 Agreement</h4>
+          <p>Using evidence and regulatory pressure, the broker issued a €12,000 settlement as part of a negotiated
+            recovery.</p>
+        </div>
       </div>
 
     </div>
 
-    <div class="testimonial-dots" id="testimonialDots"></div>
+
+
+
+
+    <!-- TESTIMONIALS -->
+    <div class="testimonial-carousel" id="testimonialCarousel">
+
+      <h2 class="testimonial-title">What Our Clients Have to Say</h2>
+
+      <div
+        class="elementor-element elementor-element-273a9679 elementor-widget-mobile__width-inherit elementor-widget__width-auto elementor-widget elementor-widget-text-editor"
+        data-id="273a9679" data-element_type="widget" data-widget_type="text-editor.default">
+        <div class="elementor-widget-container">
+          <p><span
+              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐</span><span
+              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐</span><span
+              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐</span><span
+              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐</span><span
+              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">⭐
+            </span><strong
+              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">4.9/5</strong><span
+              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">
+              – Based on 3,435 Reviews</span></p>
+        </div>
+      </div>
+
+      <div class="testimonial-inner" id="testimonialInner">
+
+        <div class="testimonial-item">
+          <p class="testimonial-text">
+            “ViltaGlobal helped me recover €7,500. They handled everything professionally and kept me updated
+            throughout.”
+          </p>
+          <p class="testimonial-author">— A.M., Germany</p>
+        </div>
+
+        <div class="testimonial-item">
+          <p class="testimonial-text">
+            “After being scammed by a crypto broker, I had no hope. Within weeks I received a settlement offer thanks to
+            their help.”
+          </p>
+          <p class="testimonial-author">— J.S., United Kingdom</p>
+        </div>
+
+        <div class="testimonial-item">
+          <p class="testimonial-text">
+            “I was embarrassed at first, but they treated me with respect and helped me recover €3,100 through my card
+            issuer.”
+          </p>
+          <p class="testimonial-author">— L.K., Cyprus</p>
+        </div>
+
+        <div class="testimonial-item">
+          <p class="testimonial-text">
+            “Thanks for everything.”
+          </p>
+          <p class="testimonial-author">— S.J., Italy</p>
+        </div>
+
+      </div>
+
+      <div class="testimonial-dots" id="testimonialDots"></div>
+
+    </div>
 
   </div>
 
-</div>
+  <script>
 
-<script>
+    /* REUSABLE CAROUSEL FUNCTION */
+    function initCarousel(config) {
+      const { innerId, dotsId, itemSelector, autoInterval = 4000, threshold = 80 } = config;
+      const inner = document.getElementById(innerId);
+      const dots = document.getElementById(dotsId);
+      const items = document.querySelectorAll(itemSelector);
+      if (!inner || !dots || items.length === 0) return;
 
-/* REUSABLE CAROUSEL FUNCTION */
-function initCarousel(config) {
-  const { innerId, dotsId, itemSelector, autoInterval = 4000, threshold = 80 } = config;
-  const inner = document.getElementById(innerId);
-  const dots = document.getElementById(dotsId);
-  const items = document.querySelectorAll(itemSelector);
-  if (!inner || !dots || items.length === 0) return;
+      // Get the container (parent of inner)
+      const container = inner.parentElement;
 
-  // Get the container (parent of inner)
-  const container = inner.parentElement;
+      let currentSlide = 0;
+      let autoSlide = true;
+      const swipeState = { startX: 0, startY: 0, currentX: 0, currentY: 0, isSwiping: false, threshold };
 
-  let currentSlide = 0;
-  let autoSlide = true;
-  const swipeState = { startX: 0, startY: 0, currentX: 0, isSwiping: false, threshold };
+      // Generate dots
+      items.forEach((_, i) => {
+        const dot = document.createElement("span");
+        if (i === 0) dot.classList.add("active");
+        dot.onclick = () => { currentSlide = i; update(); autoSlide = false; };
+        dots.appendChild(dot);
+      });
 
-  // Generate dots
-  items.forEach((_, i) => {
-    const dot = document.createElement("span");
-    if (i === 0) dot.classList.add("active");
-    dot.onclick = () => { currentSlide = i; update(); autoSlide = false; };
-    dots.appendChild(dot);
-  });
-
-  function update() {
-    inner.style.transform = `translateX(-${currentSlide * 100}%)`;
-    [...dots.children].forEach((d, i) => d.classList.toggle("active", i === currentSlide));
-  }
-
-  function next() {
-    if (!autoSlide) return;
-    currentSlide = (currentSlide + 1) % items.length;
-    update();
-  }
-
-  // Touch handlers - attach to container for better iOS support
-  const handleTouchStart = (e) => {
-    autoSlide = false;
-    swipeState.startX = e.touches[0].clientX;
-    swipeState.startY = e.touches[0].clientY;
-    swipeState.isSwiping = false;
-  };
-
-  const handleTouchMove = (e) => {
-    if (!swipeState.startX) return;
-    swipeState.currentX = e.touches[0].clientX;
-    const currentY = e.touches[0].clientY;
-    const diffX = Math.abs(swipeState.currentX - swipeState.startX);
-    const diffY = Math.abs(currentY - swipeState.startY);
-    
-    // If horizontal movement is dominant, handle swipe
-    if (diffX > 5 && diffX > diffY * 1.2) {
-      e.preventDefault(); // Prevent page scroll when swiping horizontally
-      if (!swipeState.isSwiping) {
-        swipeState.isSwiping = true;
-        inner.classList.add("swiping");
+      function update() {
+        inner.style.transform = `translateX(-${currentSlide * 100}%)`;
+        [...dots.children].forEach((d, i) => d.classList.toggle("active", i === currentSlide));
       }
-      const offset = swipeState.currentX - swipeState.startX;
-      inner.style.transform = `translateX(calc(-${currentSlide * 100}% + ${offset}px))`;
-    }
-  };
 
-  const handleTouchEnd = (e) => {
-    if (!swipeState.isSwiping) {
-      swipeState.startX = 0;
-      return;
-    }
-    inner.classList.remove("swiping");
-    const diffX = swipeState.currentX - swipeState.startX;
-    const diffY = Math.abs(e.changedTouches[0].clientY - swipeState.startY);
-    if (Math.abs(diffX) > swipeState.threshold && Math.abs(diffX) > diffY * 1.2) {
-      currentSlide = diffX < 0 ? (currentSlide + 1) % items.length : (currentSlide - 1 + items.length) % items.length;
-    }
-    update();
-    swipeState.startX = 0;
-    swipeState.isSwiping = false;
-  };
-
-  // Attach handlers to container for iOS compatibility
-  if (container) {
-    container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    container.addEventListener("touchmove", handleTouchMove, { passive: false });
-    container.addEventListener("touchend", handleTouchEnd, { passive: true });
-  }
-
-  // Desktop drag
-  inner.addEventListener("mousedown", (e) => {
-    autoSlide = false;
-    swipeState.startX = e.clientX;
-  });
-
-  inner.addEventListener("mouseup", (e) => {
-    if (!swipeState.startX) return;
-    const diffX = e.clientX - swipeState.startX;
-    if (Math.abs(diffX) > swipeState.threshold) {
-      currentSlide = diffX < 0 ? (currentSlide + 1) % items.length : (currentSlide - 1 + items.length) % items.length;
-      update();
-    }
-    swipeState.startX = 0;
-  });
-
-  setInterval(next, autoInterval);
-}
-
-// Initialize carousels
-initCarousel({ innerId: "carouselInner", dotsId: "dots", itemSelector: ".carousel-item", autoInterval: 4000 });
-initCarousel({ innerId: "testimonialInner", dotsId: "testimonialDots", itemSelector: ".testimonial-item", autoInterval: 5000 });
-
-
-/* TRUST BADGE CAROUSEL */
-let tb=0;const trustInner=document.getElementById("trustInner");const trustDots=document.getElementById("trustDots");const trustTotal=document.querySelectorAll(".trust-item").length;
-if(trustInner && trustDots && trustTotal > 0){
-  for(let i=0;i<trustTotal;i++){let d=document.createElement("span");if(i===0)d.classList.add("active");d.onclick=()=>{tb=i;updateTB();};trustDots.appendChild(d);} 
-  function updateTB(){if(trustInner && trustDots){trustInner.style.transform=`translateX(-${tb*100}%)`;[...trustDots.children].forEach((d,i)=>d.classList.toggle("active",i===tb));}}
-  setInterval(()=>{if(trustTotal > 0){tb=(tb+1)%trustTotal;updateTB();}},3500);
-}
-
-/* INTERNATIONAL PHONE INPUT - Initialize with IP-based country detection */
-const phoneInput = document.getElementById("phone");
-if (phoneInput) {
-  const script = document.createElement("script");
-  script.src = "https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/utils.js";
-  script.onload = function() {
-    const iti = window.intlTelInput(phoneInput, {
-      initialCountry: "auto",
-      geoIpLookup: function(callback) {
-        fetch("https://ipapi.co/json/")
-          .then(function(res) { return res.json(); })
-          .then(function(data) {
-            callback(data.country_code || "us");
-          })
-          .catch(function() {
-            callback("us");
-          });
-      },
-      utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/utils.js",
-      preferredCountries: ["us", "gb", "de", "fr", "it", "es", "nl", "be", "ch", "at"],
-      separateDialCode: false,
-      nationalMode: false,
-      formatOnDisplay: true,
-      autoPlaceholder: "off",
-      allowDropdown: true,
-      dropdownContainer: document.body
-    });
-
-    // Remove placeholder text
-    phoneInput.placeholder = "";
-    
-    // Add country code prefix when country changes
-    phoneInput.addEventListener("countrychange", () => {
-      const data = iti.getSelectedCountryData();
-      if (!data?.dialCode) return;
-      const val = phoneInput.value.replace(/^\+\d+\s*/, "").trim();
-      if (!val) {
-        phoneInput.value = `+${data.dialCode}`;
-      } else if (!phoneInput.value.startsWith(`+${data.dialCode}`) && !/^\+\d+/.test(phoneInput.value)) {
-        phoneInput.value = `+${data.dialCode} ${val}`;
+      function next() {
+        if (!autoSlide) return;
+        currentSlide = (currentSlide + 1) % items.length;
+        update();
       }
-    });
 
-    // Handle click on input field
-    phoneInput.addEventListener("click", (e) => e.stopPropagation());
+      // Touch handlers - attach to container for better iOS support
+      const handleTouchStart = (e) => {
+        autoSlide = false;
+        swipeState.startX = e.touches[0].clientX;
+        swipeState.startY = e.touches[0].clientY;
+        swipeState.isSwiping = false;
+      };
 
-    // Simple backdrop
-    let backdrop = null, scrollPos = 0;
-    const update = () => {
-      const d = document.querySelector(".iti__dropdown-content");
-      const visible = d && !d.classList.contains("iti__hide") && d.offsetParent;
-      if (visible && !backdrop) {
-        scrollPos = window.pageYOffset;
-        backdrop = document.createElement("div");
-        backdrop.className = "iti-dropdown-backdrop";
-        backdrop.onclick = () => iti.closeDropdown();
-        document.body.appendChild(backdrop);
-        document.body.classList.add("iti-dropdown-open");
-        document.body.style.top = `-${scrollPos}px`;
-      } else if (!visible && backdrop) {
-        backdrop.remove();
-        backdrop = null;
-        document.body.classList.remove("iti-dropdown-open");
-        document.body.style.top = "";
-        window.scrollTo(0, scrollPos);
+      const handleTouchMove = (e) => {
+        if (!swipeState.startX) return;
+        swipeState.currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const diffX = swipeState.currentX - swipeState.startX;
+        const diffY = currentY - swipeState.startY;
+        const absDiffX = Math.abs(diffX);
+        const absDiffY = Math.abs(diffY);
+
+        // If vertical movement is dominant, allow normal scrolling (don't interfere)
+        if (absDiffY > absDiffX * 1.5) {
+          // Reset any active swipe to allow vertical scrolling
+          if (swipeState.isSwiping) {
+            swipeState.isSwiping = false;
+            inner.classList.remove("swiping");
+            update(); // Reset carousel position
+            swipeState.startX = 0; // Reset to allow vertical scroll
+          }
+          return; // Don't prevent default, allow vertical scroll
+        }
+
+        // If horizontal movement is dominant, handle carousel swipe
+        if (absDiffX > 10 && absDiffX > absDiffY * 1.5) {
+          e.preventDefault(); // Prevent page scroll when swiping horizontally
+          if (!swipeState.isSwiping) {
+            swipeState.isSwiping = true;
+            inner.classList.add("swiping");
+          }
+          inner.style.transform = `translateX(calc(-${currentSlide * 100}% + ${diffX}px))`;
+        }
+      };
+
+      const handleTouchEnd = (e) => {
+        if (!swipeState.isSwiping) {
+          swipeState.startX = 0;
+          swipeState.startY = 0;
+          return;
+        }
+        inner.classList.remove("swiping");
+        const diffX = swipeState.currentX - swipeState.startX;
+        const diffY = Math.abs((e.changedTouches[0]?.clientY || swipeState.startY) - swipeState.startY);
+        const absDiffX = Math.abs(diffX);
+        if (absDiffX > swipeState.threshold && absDiffX > diffY * 1.5) {
+          currentSlide = diffX < 0 ? (currentSlide + 1) % items.length : (currentSlide - 1 + items.length) % items.length;
+        }
+        update();
+        swipeState.startX = 0;
+        swipeState.startY = 0;
+        swipeState.isSwiping = false;
+      };
+
+      // Attach handlers to container for better iOS support
+      if (container) {
+        container.addEventListener("touchstart", handleTouchStart, { passive: true });
+        container.addEventListener("touchmove", handleTouchMove, { passive: false });
+        container.addEventListener("touchend", handleTouchEnd, { passive: true });
       }
-    };
-    new MutationObserver(update).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
-    phoneInput.addEventListener("focus", () => setTimeout(update, 100));
-    phoneInput.closest(".iti")?.querySelector(".iti__selected-country")?.addEventListener("click", () => setTimeout(update, 100));
 
-    // Update form submission to include country code
-    phoneInput.closest("form")?.addEventListener("submit", () => {
-      const num = iti.getNumber();
-      if (num) phoneInput.value = num;
-    });
-  };
-  document.head.appendChild(script);
-}
+      // Desktop drag
+      inner.addEventListener("mousedown", (e) => {
+        autoSlide = false;
+        swipeState.startX = e.clientX;
+      });
 
-</script>
+      inner.addEventListener("mouseup", (e) => {
+        if (!swipeState.startX) return;
+        const diffX = e.clientX - swipeState.startX;
+        if (Math.abs(diffX) > swipeState.threshold) {
+          currentSlide = diffX < 0 ? (currentSlide + 1) % items.length : (currentSlide - 1 + items.length) % items.length;
+          update();
+        }
+        swipeState.startX = 0;
+      });
+
+      setInterval(next, autoInterval);
+    }
+
+    // Initialize carousels
+    initCarousel({ innerId: "carouselInner", dotsId: "dots", itemSelector: ".carousel-item", autoInterval: 4000 });
+    initCarousel({ innerId: "testimonialInner", dotsId: "testimonialDots", itemSelector: ".testimonial-item", autoInterval: 5000 });
+
+
+    /* TRUST BADGE CAROUSEL */
+    let tb = 0; const trustInner = document.getElementById("trustInner"); const trustDots = document.getElementById("trustDots"); const trustTotal = document.querySelectorAll(".trust-item").length;
+    if (trustInner && trustDots && trustTotal > 0) {
+      for (let i = 0; i < trustTotal; i++) { let d = document.createElement("span"); if (i === 0) d.classList.add("active"); d.onclick = () => { tb = i; updateTB(); }; trustDots.appendChild(d); }
+      function updateTB() { if (trustInner && trustDots) { trustInner.style.transform = `translateX(-${tb * 100}%)`;[...trustDots.children].forEach((d, i) => d.classList.toggle("active", i === tb)); } }
+      setInterval(() => { if (trustTotal > 0) { tb = (tb + 1) % trustTotal; updateTB(); } }, 3500);
+    }
+
+    /* INTERNATIONAL PHONE INPUT - Initialize with IP-based country detection */
+    const phoneInput = document.getElementById("phone");
+    if (phoneInput) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/utils.js";
+      script.onload = function () {
+        const iti = window.intlTelInput(phoneInput, {
+          initialCountry: "auto",
+          geoIpLookup: function (callback) {
+            fetch("https://ipapi.co/json/")
+              .then(function (res) { return res.json(); })
+              .then(function (data) {
+                callback(data.country_code || "us");
+              })
+              .catch(function () {
+                callback("us");
+              });
+          },
+          utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.3/build/js/utils.js",
+          preferredCountries: ["us", "gb", "de", "fr", "it", "es", "nl", "be", "ch", "at"],
+          separateDialCode: false,
+          nationalMode: false,
+          formatOnDisplay: true,
+          autoPlaceholder: "off",
+          allowDropdown: true,
+          dropdownContainer: document.body
+        });
+
+        // Remove placeholder text
+        phoneInput.placeholder = "";
+
+        // Add country code prefix when country changes
+        phoneInput.addEventListener("countrychange", () => {
+          const data = iti.getSelectedCountryData();
+          if (!data?.dialCode) return;
+          const val = phoneInput.value.replace(/^\+\d+\s*/, "").trim();
+          if (!val) {
+            phoneInput.value = `+${data.dialCode}`;
+          } else if (!phoneInput.value.startsWith(`+${data.dialCode}`) && !/^\+\d+/.test(phoneInput.value)) {
+            phoneInput.value = `+${data.dialCode} ${val}`;
+          }
+        });
+
+        // Handle click on input field
+        phoneInput.addEventListener("click", (e) => e.stopPropagation());
+
+        // Simple backdrop
+        let backdrop = null, scrollPos = 0;
+        const update = () => {
+          const d = document.querySelector(".iti__dropdown-content");
+          const visible = d && !d.classList.contains("iti__hide") && d.offsetParent;
+          if (visible && !backdrop) {
+            scrollPos = window.pageYOffset;
+            backdrop = document.createElement("div");
+            backdrop.className = "iti-dropdown-backdrop";
+            backdrop.onclick = () => iti.closeDropdown();
+            document.body.appendChild(backdrop);
+            document.body.classList.add("iti-dropdown-open");
+            document.body.style.top = `-${scrollPos}px`;
+          } else if (!visible && backdrop) {
+            backdrop.remove();
+            backdrop = null;
+            document.body.classList.remove("iti-dropdown-open");
+            document.body.style.top = "";
+            window.scrollTo(0, scrollPos);
+          }
+        };
+        new MutationObserver(update).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+        phoneInput.addEventListener("focus", () => setTimeout(update, 100));
+        phoneInput.closest(".iti")?.querySelector(".iti__selected-country")?.addEventListener("click", () => setTimeout(update, 100));
+
+        // Update form submission to include country code
+        phoneInput.closest("form")?.addEventListener("submit", () => {
+          const num = iti.getNumber();
+          if (num) phoneInput.value = num;
+        });
+      };
+      document.head.appendChild(script);
+    }
+
+  </script>
 
 </body>
+
 </html>
