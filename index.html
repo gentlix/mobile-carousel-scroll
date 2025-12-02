@@ -391,15 +391,9 @@
   /* Backdrop overlay when dropdown is open */
   .iti-dropdown-backdrop {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.4);
     z-index: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: auto;
   }
 
   .iti--container.iti--fullscreen-popup {
@@ -1172,127 +1166,30 @@ if (phoneInput) {
       e.stopPropagation();
     });
 
-    // Store scroll position and backdrop element
-    let scrollPosition = 0;
-    let backdrop = null;
-
-    // Function to lock body scroll and show backdrop
-    function lockBodyScroll() {
-      if (document.body.classList.contains("iti-dropdown-open")) return; // Already locked
-      
-      scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-      document.body.classList.add("iti-dropdown-open");
-      document.body.style.top = `-${scrollPosition}px`;
-      
-      // Create backdrop
-      if (!backdrop) {
+    // Simple backdrop
+    let backdrop = null, scrollPos = 0;
+    const update = () => {
+      const d = document.querySelector(".iti__dropdown-content");
+      const visible = d && !d.classList.contains("iti__hide") && d.offsetParent;
+      if (visible && !backdrop) {
+        scrollPos = window.pageYOffset;
         backdrop = document.createElement("div");
         backdrop.className = "iti-dropdown-backdrop";
-        backdrop.addEventListener("click", function(e) {
-          e.stopPropagation();
-          e.preventDefault();
-          if (iti) {
-            iti.closeDropdown();
-          }
-          setTimeout(checkDropdownState, 100);
-        });
-        // Insert backdrop - dropdown will be on top due to higher z-index
+        backdrop.onclick = () => iti.closeDropdown();
         document.body.appendChild(backdrop);
-      } else {
-        backdrop.style.display = "block";
-      }
-    }
-
-    // Function to unlock body scroll and remove backdrop
-    function unlockBodyScroll() {
-      if (!document.body.classList.contains("iti-dropdown-open")) return; // Already unlocked
-      
-      document.body.classList.remove("iti-dropdown-open");
-      document.body.style.top = "";
-      window.scrollTo(0, scrollPosition);
-      
-      // Remove backdrop
-      if (backdrop) {
-        backdrop.style.display = "none";
+        document.body.classList.add("iti-dropdown-open");
+        document.body.style.top = `-${scrollPos}px`;
+      } else if (!visible && backdrop) {
         backdrop.remove();
         backdrop = null;
+        document.body.classList.remove("iti-dropdown-open");
+        document.body.style.top = "";
+        window.scrollTo(0, scrollPos);
       }
-    }
-
-    // Function to check if dropdown is visible
-    function isDropdownVisible() {
-      const dropdownContent = document.querySelector(".iti__dropdown-content");
-      if (!dropdownContent) return false;
-      
-      // Check if dropdown has iti__hide class
-      if (dropdownContent.classList.contains("iti__hide")) return false;
-      
-      const style = window.getComputedStyle(dropdownContent);
-      const rect = dropdownContent.getBoundingClientRect();
-      
-      return dropdownContent.offsetParent !== null && 
-             style.display !== "none" &&
-             style.visibility !== "hidden" &&
-             style.opacity !== "0" &&
-             rect.width > 0 &&
-             rect.height > 0;
-    }
-
-    // Function to handle dropdown state changes
-    function checkDropdownState() {
-      const visible = isDropdownVisible();
-      const isLocked = document.body.classList.contains("iti-dropdown-open");
-      
-      if (visible && !isLocked) {
-        lockBodyScroll();
-      } else if (!visible && isLocked) {
-        unlockBodyScroll();
-      }
-    }
-
-    // Monitor dropdown visibility to lock/unlock scroll
-    const observer = new MutationObserver(function(mutations) {
-      checkDropdownState();
-    });
-
-    // Observe body for dropdown changes
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["style", "class"]
-    });
-
-    // Listen for clicks on selected country button to open dropdown
-    const selectedCountryBtn = phoneInput.closest(".iti")?.querySelector(".iti__selected-country");
-    if (selectedCountryBtn) {
-      selectedCountryBtn.addEventListener("click", function() {
-        setTimeout(checkDropdownState, 100);
-      });
-    }
-
-    phoneInput.addEventListener("focus", function() {
-      setTimeout(checkDropdownState, 100);
-    });
-
-    // Handle backdrop clicks
-    document.addEventListener("click", function(e) {
-      const dropdownContent = document.querySelector(".iti__dropdown-content");
-      if (!dropdownContent) return;
-      
-      // Close dropdown if clicking on backdrop
-      if (e.target.classList.contains("iti-dropdown-backdrop") || backdrop?.contains(e.target)) {
-        e.stopPropagation();
-        e.preventDefault();
-        if (iti) iti.closeDropdown();
-        setTimeout(checkDropdownState, 100);
-      }
-    });
-
-    // Listen for country change event
-    phoneInput.addEventListener("countrychange", function() {
-      setTimeout(checkDropdownState, 100);
-    });
+    };
+    new MutationObserver(update).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    phoneInput.addEventListener("focus", () => setTimeout(update, 100));
+    phoneInput.closest(".iti")?.querySelector(".iti__selected-country")?.addEventListener("click", () => setTimeout(update, 100));
 
     // Update form submission to include country code
     const form = phoneInput.closest("form");
